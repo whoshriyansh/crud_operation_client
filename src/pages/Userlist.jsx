@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ViewEditModal from "../components/ViewEditModal";
 import DeleteModal from "../components/DeleteModal";
+import { API_URL } from "../config";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -14,7 +15,7 @@ const UserList = () => {
       try {
         const token = localStorage.getItem("crudToken");
 
-        const res = await axios.get("http://localhost:4000/api/users", {
+        const res = await axios.get(`${API_URL}/api/users`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

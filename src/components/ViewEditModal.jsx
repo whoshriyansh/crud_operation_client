@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { API_URL } from "../config";
 
 const ViewEditModal = ({ user, onClose }) => {
   const [name, setName] = useState(user.name);
@@ -8,7 +9,7 @@ const ViewEditModal = ({ user, onClose }) => {
 
   const handleSave = async () => {
     try {
-      await axios.put(`http://localhost:4000/api/users/${user._id}`, {
+      await axios.put(`${API_URL}/api/users/${user._id}`, {
         name,
         number: parseInt(number),
         email,

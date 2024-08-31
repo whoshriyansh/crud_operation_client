@@ -1,0 +1,53 @@
+name: Deploy React Application
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the project
+        run: npm run build
+
+      - name: Log in to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker image
+        run: docker build -t whoshriyansh/reactjs-app .
+
+      - name: Push Docker image to Docker Hub
+        run: docker push whoshriyansh/reactjs-app
+
+  deploy:
+    needs: build
+    runs-on: aws-ec2
+
+    steps:
+      - name: Log in to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Pull Docker image from Docker Hub
+        run: docker pull whoshriyansh/reactjs-app
+
+      - name: Stop and remove old container
+        run: docker rm -f react-app-container || true
+
+      - name: Run new Docker container
+        run: |
+          docker run -d -p 3000:80 --name react-app-container \
+          whoshriyansh/reactjs-app

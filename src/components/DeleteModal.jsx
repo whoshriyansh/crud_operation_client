@@ -7,11 +7,12 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import { API_URL } from "../config";
 
 const DeleteModal = ({ user, onClose }) => {
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:4000/api/users/${user._id}`);
+      await axios.delete(`${API_URL}/api/users/${user._id}`);
       onClose();
     } catch (error) {
       console.error("Error deleting user:", error);
